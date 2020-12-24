@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform") version "1.4.10"
 }
 
-group = "me.james"
+group = "com.dowhilenotfalse"
 version = "1.0-SNAPSHOT"
 
 repositories {

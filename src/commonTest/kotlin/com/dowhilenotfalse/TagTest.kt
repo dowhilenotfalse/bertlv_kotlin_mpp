@@ -37,7 +37,7 @@ internal class TagTest {
     @Test
     fun equalsWhenOtherObjectDifferentClassIsFalse(){
         val tag = Tag("30", "00010203")
-        assertNotEquals(tag, "")
+        assertFalse(tag.equals(""))
     }
 
     @Test
