@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Compiled class file
 *.class
 
@@ -45,9 +44,3 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
-
-# End of https://www.toptal.com/developers/gitignore/api/gradle
-/gradlew
-/gradlew.bat
-/gradle/
->>>>>>> 1d8f2b9a30a7a4e48ae26f3ad451b0302247f44a
