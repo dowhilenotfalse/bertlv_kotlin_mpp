@@ -10,6 +10,8 @@ class BerTlv(private val hexString: String) {
         parseTags(byteArray)
     }
 
+    constructor() : this("")
+
     fun deleteTag(tag: Tag) = tags.remove(tag.name)
     fun deleteTag(tagName: String) = tags.remove(tagName)
     fun addTag(tag: Tag) { tags[tag.name] = tag }

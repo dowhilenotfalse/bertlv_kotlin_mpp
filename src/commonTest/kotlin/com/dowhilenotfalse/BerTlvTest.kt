@@ -14,6 +14,14 @@ internal class BerTlvTest {
     }
 
     @Test
+    fun buildingTLVIsSupported() {
+        val berTlv = BerTlv()
+        berTlv.addTag(Tag("9F02", "00112233"))
+
+        assertEquals("9F020400112233", berTlv.toString())
+    }
+
+    @Test
     fun multibyteTagIsSupported() {
         val tag = Tag(BerTlv.byteArray("9F02"), BerTlv.byteArray("9F03069F1A02"))
         val berTlv = BerTlv(tag.toString())
