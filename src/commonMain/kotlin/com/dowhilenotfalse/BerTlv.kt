@@ -2,15 +2,15 @@ package com.dowhilenotfalse
 
 import kotlin.math.ceil
 
-class BerTlv(private val hexString: String) {
+class BerTlv(byteArray: IntArray) {
     val tags = mutableMapOf<String, Tag>()
 
     init {
-        val byteArray = byteArray(hexString)
         parseTags(byteArray)
     }
 
     constructor() : this("")
+    constructor(hexString: String): this(bytes(hexString))
 
     fun deleteTag(tag: Tag) = tags.remove(tag.name)
     fun deleteTag(tagName: String) = tags.remove(tagName)
@@ -95,14 +95,33 @@ class BerTlv(private val hexString: String) {
     companion object{
         const val TLV_MINIMUM_BYTE_COUNT = 3
         const val TAG_PRIMITIVE_INDICATOR = 32
+        const val TAG_CLASS_INDICATOR = 192
         const val TAG_MULTIBYTE_INDICATOR = 31
         const val TAG_MULTIBYTE_END_INDICATOR = 128
         const val LENGTH_MULTIBYTE_INDICATOR = 128
         const val LENGTH_VALUE_BITS = 127
 
-        fun byteArray(hexString: String): IntArray{
-            val trimmedHexString = hexString.replace("\\s".toRegex(), "")
+        fun bytes(value: Int): IntArray{
+            var number = value
+            val numberOfBytes = when{
+                number <= 255 -> 1
+                number <= 65535 -> 2
+                number <= 16777215 -> 3
+                else -> 4
+            }
 
+            val byteArray = IntArray(numberOfBytes)
+
+            for(i in numberOfBytes - 1 downTo 0){
+                byteArray[i] = number and 255
+                number = number.shr(8)
+            }
+
+            return byteArray
+        }
+
+        fun bytes(hexString: String): IntArray{
+            val trimmedHexString = hexString.replace("\\s".toRegex(), "")
             if(trimmedHexString.isEmpty() || trimmedHexString.length % 2 > 0) return intArrayOf()
             val byteArray = IntArray(trimmedHexString.length/2)
 
@@ -113,7 +132,7 @@ class BerTlv(private val hexString: String) {
             return byteArray
         }
 
-        fun hexString(byteArray: IntArray): String{
+        fun hex(byteArray: IntArray): String{
             val stringBuilder = StringBuilder()
             byteArray.forEach {
                 val hex = it.toString(16)

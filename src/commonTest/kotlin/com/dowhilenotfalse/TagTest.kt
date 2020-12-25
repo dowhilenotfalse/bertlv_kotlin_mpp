@@ -14,18 +14,54 @@ internal class TagTest {
     }
 
     @Test
-    fun setValueUpdatesValue(){
+    fun tagSupportedAsInt(){
+        val tag = Tag(0x9F02, "00010203")
+        assertEquals("9F02", tag.name)
+    }
+
+    @Test
+    fun tagSupportedAsHexString(){
+        val tag = Tag("9F02", "00010203")
+        assertEquals("9F02", tag.name)
+    }
+
+    @Test
+    fun valueSupportedAsString(){
         val value = "FFAAFF"
         val tag = Tag("9F02", "00010203")
         tag.setValue(value)
 
-        assertEquals(value, BerTlv.hexString(tag.value))
+        assertEquals(value, BerTlv.hex(tag.value))
     }
 
     @Test
     fun isConstructedWhenTagConstructedIsTrue(){
         val tag = Tag("30", "0C 06 4D 7E 6C 6C 65 72 02 01 1E 01 01 00 80 01 00")
         assertTrue(tag.isConstructed())
+    }
+
+    @Test
+    fun isUniversalClassWhenUniveralClassIsTrue(){
+        val tag = Tag(0x1F, "0C 06")
+        assertTrue(tag.isUniversalClass())
+    }
+
+    @Test
+    fun isApplicationClassWhenApplicationClassIsTrue(){
+        val tag = Tag(0x4F, "0C 06")
+        assertTrue(tag.isApplicationClass())
+    }
+
+    @Test
+    fun isContextClassWhenContextClassIsTrue(){
+        val tag = Tag(0x8F, "0C 06")
+        assertTrue(tag.isContextClass())
+    }
+
+    @Test
+    fun isPrivateClassWhenPrivateClassIsTrue(){
+        val tag = Tag(0xCF, "0C 06")
+        assertTrue(tag.isPrivateClass())
     }
 
     @Test
