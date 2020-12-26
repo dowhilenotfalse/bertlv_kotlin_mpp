@@ -15,44 +15,64 @@ Library is used to work with ASN.1 BER-TLV structures and available in Kotlin, J
 * Native
 
 
-## Getting Started
+## Usage
 
-Parse TLV
-------------
 
-```
-      BerTlv("30110C064D7E6C6C657202011E010100800100")
-```
-
-Build TLV
-------------
+#### Parse TLV
 
 ```
-      val berTlv = BerTlv()
-      berTlv.addTag(Tag("8A", "00"))
-      
-      val tlv = berTlv.toString()
-```
-
-
-Update TLV
-------------
-
-```
-      val berTlv = BerTlv()
-      
-      //add
-      berTlv.addTag(Tag("8A", "00"))
-      berTlv.addTag(Tag("9F02", "00"))
-      
-      //delete
-      berTlv.deleteTag("9F02")
-      
-      //update
+      BerTlv("8A0C48656c6c6f20576f726c64210C010A")
       val tag = berTlv.tag("8A")
-      tag?.setValue("05")
+      
+      tag?.stringValue()      // Hello World!
+      tag?.hexValue()         // 48656c6c6f20576f726c6421
+      tag?.toString()         // 8A0C48656c6c6f20576f726c6421
+```
 
-      val tlv = berTlv.toString()
+#### Build TLV
+
+```
+      val berTlv = BerTlv()
+      berTlv.addTag(Tag("8A", "00"))
+      
+      berTlv.toString()       // 8A0100
+```
+
+
+#### Add Tag
+
+```
+      val berTlv = BerTlv()
+      
+      berTlv.addTag(Tag("8A", "00"))
+      berTlv.addTag(Tag(0x9F02, "00"))
+      
+      berTlv.toString()       // 8A01009F020100
+```
+
+#### Update Tag
+
+```
+      val berTlv = BerTlv("8A00010C010A")
+         
+      var tag = berTlv.tag("8A")
+      tag?.setHexValue("05")
+
+      tag?.toString()          // 8A0105
+      
+      tag = berTlv.tag("0C")
+      tag?.setStringValue("Hello World!")
+      
+      tag?.toString()          // 0C0C48656c6c6f20576f726c6421
+```
+
+#### Delete Tag
+
+```
+      val berTlv = BerTlv("8A0C48656c6c6f20576f726c64210C010A")      
+      berTlv.deleteTag("C0")
+      
+      berTlv.toString()       // 8A0C48656c6c6f20576f726c6421
 ```
 
 ## Version History
