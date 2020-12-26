@@ -29,7 +29,7 @@ internal class TagTest {
     fun valueSupportedAsString(){
         val value = "FFAAFF"
         val tag = Tag("9F02", "00010203")
-        tag.setValue(value)
+        tag.setHexValue(value)
 
         assertEquals(value, BerTlv.hex(tag.value))
     }
@@ -62,6 +62,28 @@ internal class TagTest {
     fun isPrivateClassWhenPrivateClassIsTrue(){
         val tag = Tag(0xCF, "0C 06")
         assertTrue(tag.isPrivateClass())
+    }
+
+    @Test
+    fun hexValueReturnsHexString(){
+        val value = "48656C6C6F20576F726C6421"
+        val tag = Tag(0x0C, value)
+        assertEquals(value, tag.hexValue())
+    }
+
+    @Test
+    fun setStringValueConvertsStringToValue(){
+        val tag = Tag(0x0C, "48 65 6c 6c 6f 20 57 6f 72 6c 64 21")
+        val value = "Hello World!"
+        tag.setStringValue(value)
+
+        assertEquals(value, tag.stringValue())
+    }
+
+    @Test
+    fun stringValueReturnsString(){
+        val tag = Tag(0x0C, "48 65 6c 6c 6f 20 57 6f 72 6c 64 21")
+        assertEquals("Hello World!", tag.stringValue())
     }
 
     @Test

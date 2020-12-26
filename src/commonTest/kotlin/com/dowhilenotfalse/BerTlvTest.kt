@@ -104,7 +104,7 @@ internal class BerTlvTest {
         val berTlv = BerTlv(hexTLV)
         val tag = berTlv.tag("DFEE25")
         val originalTagTLV = tag.toString()
-        tag?.setValue("010F00")
+        tag?.setHexValue("010F00")
         val updatedHexTLV = hexTLV.replace(originalTagTLV, "DFEE2503010F00")
 
         assertEquals(updatedHexTLV, berTlv.toString())
