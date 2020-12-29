@@ -1,9 +1,10 @@
 plugins {
     kotlin("multiplatform") version "1.4.10"
+    id("maven-publish")
 }
 
 group = "com.dowhilenotfalse"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -18,7 +19,8 @@ kotlin {
             useJUnit()
         }
     }
-    js(LEGACY) {
+
+    js{
         browser {
             testTask {
                 useKarma {
@@ -28,6 +30,8 @@ kotlin {
             }
         }
     }
+
+
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
     val nativeTarget = when {
@@ -60,5 +64,18 @@ kotlin {
         }
         val nativeMain by getting
         val nativeTest by getting
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/dowhilenotfalse/bertlv_kotlin_mpp")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
