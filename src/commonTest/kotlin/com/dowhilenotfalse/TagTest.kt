@@ -73,7 +73,7 @@ internal class TagTest {
 
     @Test
     fun setStringValueConvertsStringToValue(){
-        val tag = Tag(0x0C, "48 65 6c 6c 6f 20 57 6f 72 6c 64 21")
+        val tag = Tag(0x0C, "00")
         val value = "Hello World!"
         tag.setStringValue(value)
 

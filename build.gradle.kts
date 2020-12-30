@@ -20,7 +20,7 @@ kotlin {
         }
     }
 
-    js{
+    js(LEGACY){
         browser {
             testTask {
                 useKarma {

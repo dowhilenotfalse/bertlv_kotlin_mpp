@@ -16,11 +16,10 @@ class Tag(val id: IntArray, var value: IntArray = intArrayOf()){
     fun setHexValue(valueHex: String){ value = BerTlv.bytes(valueHex) }
     fun hexValue() = BerTlv.hex(value)
 
-    fun setStringValue(value: String): IntArray {
-        val array = IntArray(value.length)
-        for(i in value.indices){ array[i] = value[i].toInt()}
-
-        return array
+    fun setStringValue(string: String) {
+        val array = IntArray(string.length)
+        for(i in string.indices){ array[i] = string[i].toInt()}
+        value = array
     }
 
     fun stringValue(): String{

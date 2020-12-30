@@ -2,7 +2,8 @@ package com.dowhilenotfalse
 
 import kotlin.math.ceil
 
-class BerTlv(byteArray: IntArray) {
+
+class BerTlv @Throws(TagException::class) constructor(byteArray: IntArray) {
     val tags = mutableMapOf<String, Tag>()
 
     init {
@@ -10,7 +11,7 @@ class BerTlv(byteArray: IntArray) {
     }
 
     constructor() : this("")
-    constructor(hexString: String): this(bytes(hexString))
+    @Throws(TagException::class) constructor(hexString: String): this(bytes(hexString))
 
     fun deleteTag(tag: Tag) = tags.remove(tag.name)
     fun deleteTag(tagName: String) = tags.remove(tagName)
@@ -19,6 +20,9 @@ class BerTlv(byteArray: IntArray) {
 
     private fun parseTags(byteArray: IntArray, parentTag: Tag? = null){
         var startIndex = 0
+
+        if(byteArray.isNotEmpty() && !hasNextTag(byteArray, startIndex)) throw TagException(Tag(byteArray), IntRange(0, byteArray.size))
+
         while(hasNextTag(byteArray, startIndex)){
             val tagResult = parseNextTag(byteArray, startIndex)
             val tag = tagResult.tag
@@ -35,32 +39,34 @@ class BerTlv(byteArray: IntArray) {
         val firstByte = tlv[startIndex]
         var tagMultiByte = (firstByte and TAG_MULTIBYTE_INDICATOR) == TAG_MULTIBYTE_INDICATOR
 
-        while (tagMultiByte){
+        while (tagMultiByte && tagByteCount < tlv.size){
             val nextByte = tlv[startIndex + tagByteCount]
             tagMultiByte = (nextByte and TAG_MULTIBYTE_END_INDICATOR) != 0
             tagByteCount++
         }
 
         val tagByteLength = startIndex + tagByteCount
-        val valueResult = parseTagValue(tlv, tagByteLength)
+        val tagBytesTooLong = tagByteLength >= tlv.size
+        val tagId = if(tagBytesTooLong) tlv.copyOfRange(startIndex, tlv.size) else tlv.copyOfRange(startIndex, tagByteLength)
+        if(tagBytesTooLong) throw TagException(Tag(tagId), IntRange(startIndex, tlv.size))
 
-        val tag = Tag(
-            tlv.copyOfRange(startIndex, tagByteLength),
-            valueResult.byteArray
-        )
+        val valueResult = parseTagValue(tlv, tagByteLength)
+        if(valueResult.failure) throw TagException(Tag(tagId), valueResult.range)
+
+        val tag = Tag(tagId, valueResult.byteArray)
 
         return TagResult(tag, IntRange(startIndex, valueResult.range.last))
     }
 
     private fun parseTagValue(tlv: IntArray, startIndex: Int): ByteResult{
-        if (tlv.size <= startIndex) return ByteResult()
-
         val firstByte = tlv[startIndex]
         val multiByteLength = (firstByte and LENGTH_MULTIBYTE_INDICATOR) == LENGTH_MULTIBYTE_INDICATOR
         var valueLength = (firstByte and LENGTH_VALUE_BITS)
         val valueStartIndex = if(multiByteLength) startIndex + valueLength + 1 else startIndex + 1
 
-        if(tlv.size < valueStartIndex + valueLength) return ByteResult()
+        val valueBytesTooLong = valueStartIndex + valueLength > tlv.size
+        if(valueBytesTooLong)
+            return ByteResult(range = IntRange(startIndex, tlv.size), failure = true)
 
         if (multiByteLength && valueLength > 0) {
             val multiByteLengthStartIndex = startIndex + 2
@@ -75,11 +81,9 @@ class BerTlv(byteArray: IntArray) {
             }
         }
 
+        val value = tlv.copyOfRange(valueStartIndex, valueStartIndex + valueLength)
 
-        return ByteResult(
-            tlv.copyOfRange(valueStartIndex, valueStartIndex + valueLength),
-            IntRange(startIndex, valueStartIndex + valueLength)
-        )
+        return ByteResult(value, IntRange(startIndex, valueStartIndex + valueLength))
     }
 
     override fun toString(): String {
@@ -89,7 +93,7 @@ class BerTlv(byteArray: IntArray) {
     }
 
     private fun hasNextTag(tlv: IntArray, startIndex: Int) = tlv.size - startIndex >= TLV_MINIMUM_BYTE_COUNT
-    inner class ByteResult(val byteArray: IntArray = intArrayOf(), val range: IntRange = IntRange(0,0))
+    inner class ByteResult(val byteArray: IntArray = intArrayOf(), val range: IntRange = IntRange(0,0), val failure: Boolean = false)
     inner class TagResult(val tag: Tag, val range: IntRange = IntRange(0,0))
 
     companion object{
