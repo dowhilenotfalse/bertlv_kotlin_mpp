@@ -3,15 +3,11 @@ package com.dowhilenotfalse
 import kotlin.math.ceil
 
 
-class BerTlv @Throws(TagException::class) constructor(byteArray: IntArray) {
+class BerTlv {
     val tags = mutableMapOf<String, Tag>()
 
-    init {
-        parseTags(byteArray)
-    }
-
-    constructor() : this("")
-    @Throws(TagException::class) constructor(hexString: String): this(bytes(hexString))
+    @Throws(TagException::class) fun addTags(byteArray: IntArray) = parseTags(byteArray)
+    @Throws(TagException::class) fun addTags(hexString: String) = addTags(bytes(hexString))
 
     fun deleteTag(tag: Tag) = tags.remove(tag.name)
     fun deleteTag(tagName: String) = tags.remove(tagName)
