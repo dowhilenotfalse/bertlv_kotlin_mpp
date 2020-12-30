@@ -1,4 +1,4 @@
-[![Android-master Actions Status](https://github.com/dowhilenotfalse/bertlv_kotlin_mpp/workflows/CI/badge.svg)](https://github.com/dowhilenotfalse/bertlv_kotlin_mpp/actions)
+![Build](https://github.com/dowhilenotfalse/bertlv_kotlin_mpp/workflows/Build/badge.svg)
 
 # BERTLV Kotlin Multiplatform
 
