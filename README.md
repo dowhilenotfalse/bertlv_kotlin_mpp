@@ -21,7 +21,9 @@ Library is used to work with ASN.1 BER-TLV structures and available in Kotlin, J
 #### Parse TLV
 
 ```
-      BerTlv("8A0C48656c6c6f20576f726c64210C010A")
+      val berTlv = BerTlv()
+      berTlv.addTags("8A0C48656c6c6f20576f726c64210C010A")
+      
       val tag = berTlv.tag("8A")
       
       tag?.stringValue()      // Hello World!
@@ -53,7 +55,8 @@ Library is used to work with ASN.1 BER-TLV structures and available in Kotlin, J
 #### Update Tag
 
 ```
-      val berTlv = BerTlv("8A00010C010A")
+      val berTlv = BerTlv()
+      berTlv.addTags("8A00010C010A")
          
       var tag = berTlv.tag("8A")
       tag?.setHexValue("05")
@@ -69,7 +72,9 @@ Library is used to work with ASN.1 BER-TLV structures and available in Kotlin, J
 #### Delete Tag
 
 ```
-      val berTlv = BerTlv("8A0C48656c6c6f20576f726c64210C010A")      
+      val berTlv = BerTlv()
+      berTlv.addTags("8A0C48656c6c6f20576f726c64210C010A")
+      
       berTlv.deleteTag("C0")
       
       berTlv.toString()       // 8A0C48656c6c6f20576f726c6421
