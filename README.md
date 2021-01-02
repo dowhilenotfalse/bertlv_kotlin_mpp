@@ -8,76 +8,99 @@ Library is used to work with ASN.1 BER-TLV structures and available in Kotlin, J
 * Build and parse TLVs
 * Add, delete, and update tags
 
+
 ## Availability
-* Kotlin
-* Java
+* [Kotlin](##Kotlin)
+* [Java](##Java)
 * Javascript
 * Native
 
 
-## Usage
+## Kotlin
 
-
-#### Parse TLV
+### Gradle
+```
+implementation 'com.dowhilenotfalse:bertlv-jvm:1.0.0'
 
 ```
-      BerTlv("8A0C48656c6c6f20576f726c64210C010A")
-      val tag = berTlv.tag("8A")
-      
-      tag?.stringValue()      // Hello World!
-      tag?.hexValue()         // 48656c6c6f20576f726c6421
-      tag?.toString()         // 8A0C48656c6c6f20576f726c6421
+
+### Example
+```
+@Throws(TagException::class)
+fun main(args: Array<String>) {
+    val berTlv = BerTlv()
+
+    //Add Multiple Tags
+    berTlv.addTags("8A01000C050101010101")
+
+    //Update Tag
+    val tag8A = berTlv.tag("8A")
+    tag8A!!.setStringValue("Hello World")
+
+    //Add Tag
+    val newTag = Tag("9F02", "0A1105")
+    berTlv.addTag(newTag)
+
+    //Delete Tag
+    berTlv.deleteTag("0C")
+
+
+    println("Tag List: " + berTlv.tags) 
+    //Tag List: {8A=8A0B48656C6C6F20576F726C64, 9F02=9F02030A1105}
+    println("Tags: $berTlv")
+    //Tags: 8A0B48656C6C6F20576F726C649F02030A1105
+    println("Tag " + tag8A.name + ": " + tag8A.toString())
+    //Tag 8A: 8A0B48656C6C6F20576F726C64
+    println("Tag " + tag8A.name + " value: " + tag8A.stringValue())
+    //Tag 8A value: Hello World
+}
 ```
 
-#### Build TLV
+
+## Java
+
+### Gradle
+```
+implementation 'com.dowhilenotfalse:bertlv-jvm:1.0.0'
 
 ```
-      val berTlv = BerTlv()
-      berTlv.addTag(Tag("8A", "00"))
-      
-      berTlv.toString()       // 8A0100
+
+### Example
+```
+    public static void main(String[] args) throws TagException {
+        BerTlv berTlv = new BerTlv();
+
+        //Add Multiple Tags
+        berTlv.addTags("8A01000C050101010101");
+
+        //Update Tag
+        Tag tag8A = berTlv.tag("8A");
+        tag8A.setStringValue("Hello World");
+
+        //Add Tag
+        Tag newTag = new Tag("9F02", "0A1105");
+        berTlv.addTag(newTag);
+
+        //Delete Tag
+        berTlv.deleteTag("0C");
+
+
+        System.out.println("Tag List: " + berTlv.getTags()); 
+        //Tag List: {8A=8A0B48656C6C6F20576F726C64, 9F02=9F02030A1105}        
+        System.out.println("Tags: " + berTlv.toString()); 
+        //Tags: 8A0B48656C6C6F20576F726C649F02030A1105
+        System.out.println("Tag " + tag8A.getName() + ": " + tag8A.toString()); 
+        //Tag 8A: 8A0B48656C6C6F20576F726C64
+        System.out.println("Tag " + tag8A.getName() + " value: " + tag8A.stringValue());
+        //Tag 8A value: Hello World
+    }
 ```
 
 
-#### Add Tag
-
-```
-      val berTlv = BerTlv()
-      
-      berTlv.addTag(Tag("8A", "00"))
-      berTlv.addTag(Tag(0x9F02, "00"))
-      
-      berTlv.toString()       // 8A01009F020100
-```
-
-#### Update Tag
-
-```
-      val berTlv = BerTlv("8A00010C010A")
-         
-      var tag = berTlv.tag("8A")
-      tag?.setHexValue("05")
-
-      tag?.toString()          // 8A0105
-      
-      tag = berTlv.tag("0C")
-      tag?.setStringValue("Hello World!")
-      
-      tag?.toString()          // 0C0C48656c6c6f20576f726c6421
-```
-
-#### Delete Tag
-
-```
-      val berTlv = BerTlv("8A0C48656c6c6f20576f726c64210C010A")      
-      berTlv.deleteTag("C0")
-      
-      berTlv.toString()       // 8A0C48656c6c6f20576f726c6421
-```
 
 ## Version History
 
-* 1.0-SNAPSHOT
+* 1.0.0
     * Initial Release
 
 ## License
