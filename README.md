@@ -20,8 +20,9 @@ Library is used to work with ASN.1 BER-TLV structures and available in Kotlin, J
 
 ### Gradle
 ```
-implementation 'com.dowhilenotfalse:bertlv-jvm:1.0.0'
-
+dependencies {
+  implementation 'com.dowhilenotfalse:bertlv-jvm:1.0.0'
+}
 ```
 
 ### Example
@@ -61,8 +62,9 @@ fun main(args: Array<String>) {
 
 ### Gradle
 ```
-implementation 'com.dowhilenotfalse:bertlv-jvm:1.0.0'
-
+dependencies {
+  implementation 'com.dowhilenotfalse:bertlv-jvm:1.0.0'
+}
 ```
 
 ### Example
