@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.4.10"
     id("maven-publish")
+    id("com.jfrog.bintray") version "1.8.0"
 }
 
 group = "com.dowhilenotfalse"
@@ -8,6 +9,14 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
+    jcenter()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
 }
 
 kotlin {
@@ -67,6 +76,7 @@ kotlin {
     }
 }
 
+
 publishing {
     repositories {
         maven {
@@ -79,3 +89,10 @@ publishing {
         }
     }
 }
+
+bintray {
+    user = System.getenv("BINTRAY_USERNAME")
+    key = System.getenv("BINTRAY_KEY")
+}
+
+
